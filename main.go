@@ -1,13 +1,16 @@
 package main
 
 import (
-	"gocompany/models"
+	. "gocompany/database"
 
 	router "gocompany/routes"
 )
 
 func main() {
-	models.ConnectDatabase()
+	//ConnectDatabase("root:root@tcp(localhost:3306)/jwt_demo?parseTime=true", "mysql")
+	ConnectDatabase(Parameters{ConnectionString: "root:@tcp(localhost:3306)/company?charset=utf8mb4&parseTime=True&loc=Local", ConnectionType: "mysql"})
 
-	router.NewRoutes().Run()
+	port := ":8080"
+	Migrate()
+	router.NewRoutes().Run(port)
 }

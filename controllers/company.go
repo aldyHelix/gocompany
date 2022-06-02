@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	db "gocompany/database"
 	models "gocompany/models"
 	"net/http"
 
@@ -13,7 +14,7 @@ import (
 func FindCompanies(c *gin.Context) {
 	var company []models.Company
 
-	models.DB.Find(&company)
+	db.Instance.Find(&company)
 
 	c.JSON(http.StatusOK, gin.H{"data": company})
 }
@@ -31,7 +32,7 @@ func CreateCompany(c *gin.Context) {
 
 	//Create Company
 	company := models.Company{CompanyName: input.CompanyName, CompanyDescription: input.CompanyDescription}
-	models.DB.Create(&company)
+	db.Instance.Create(&company)
 
 	c.JSON(http.StatusOK, gin.H{"data": company})
 }
@@ -41,7 +42,7 @@ func CreateCompany(c *gin.Context) {
 func FindCompany(c *gin.Context) {
 	var company models.Company
 
-	if err := models.DB.Where("id = ?", c.Param("id")).First(&company).Error; err != nil {
+	if err := db.Instance.Where("id = ?", c.Param("id")).First(&company).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found"})
 
 		return
@@ -55,7 +56,7 @@ func FindCompany(c *gin.Context) {
 func UpdateCompany(c *gin.Context) {
 	//get model if exist
 	var company models.Company
-	if err := models.DB.Where("id=?", c.Param("id")).First(&company).Error; err != nil {
+	if err := db.Instance.Where("id=?", c.Param("id")).First(&company).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "record not found"})
 		return
 	}
@@ -67,7 +68,7 @@ func UpdateCompany(c *gin.Context) {
 		return
 	}
 
-	models.DB.Model(&company).Updates(input)
+	db.Instance.Model(&company).Updates(input)
 
 	c.JSON(http.StatusOK, gin.H{"data": company})
 }
@@ -77,11 +78,11 @@ func UpdateCompany(c *gin.Context) {
 func DeleteCompany(c *gin.Context) {
 	//get model if exist
 	var company models.Company
-	if err := models.DB.Where("id=?", c.Param("id")).First(&company).Error; err != nil {
+	if err := db.Instance.Where("id=?", c.Param("id")).First(&company).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
 
-	models.DB.Delete((&company))
+	db.Instance.Delete((&company))
 	c.JSON(http.StatusOK, gin.H{"data": true})
 }

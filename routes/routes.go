@@ -18,6 +18,7 @@ func NewRoutes() routes {
 
 	r.index(index)
 	r.company(v1)
+	r.auth(v1)
 	r.addPing(v1)
 
 	return r
